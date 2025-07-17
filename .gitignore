@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Local AI models and cache
+.cache/
+models/
+*.pth
+*.bin
+*.safetensors
+
+# Database files (keep structure but not data for privacy)
+rag_database/
+*.sqlite3
+*.db
+
+# Large files and results
+image_analysis_results.txt
+analysis_results/
+*.log
+
+# User data (don't share personal files)
+Documents/
+images/
+*.docx
+*.jpg
+*.jpeg
+*.png
+*.pdf
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
