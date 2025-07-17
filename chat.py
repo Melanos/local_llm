@@ -153,7 +153,7 @@ class RAGChatbot:
         print(f"📁 Added {files_added} files ({total_chunks} total chunks) from {folder_path}")
         return files_added, total_chunks
     
-    def search_documents(self, query, n_results=5, relevance_threshold=0.7):
+    def search_documents(self, query, n_results=5, relevance_threshold=0.3):
         """Search for relevant documents with relevance filtering"""
         try:
             results = self.collection.query(
@@ -267,8 +267,8 @@ Please provide a helpful and accurate response based on the context above. Alway
         """Main chat function with RAG"""
         print("🔍 Searching for relevant information...")
         
-        # Search for relevant documents with higher precision
-        search_results = self.search_documents(query, n_results=5, relevance_threshold=0.6)
+        # Search for relevant documents with lower threshold for better recall
+        search_results = self.search_documents(query, n_results=5, relevance_threshold=0.2)
         
         if not search_results or not search_results['documents'][0]:
             print("⚠️  No relevant documents found in database")

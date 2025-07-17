@@ -56,4 +56,14 @@ python import_image_analysis.py
 - **Analysis results**: `./analysis_results/` (auto-created)
 
 ---
-💡 **Tip**: Always activate the virtual environment first!
+💡 **Tips for Better Results:**
+- Always activate the virtual environment first!
+- Ask specific questions: "What Cisco equipment does Igor have experience with?"
+- Try follow-up questions: "What are his technical skills?" after asking about Igor
+- Use different phrasings: "technologies", "equipment", "experience", "skills"
+
+🎯 **For Better Relevance:**
+- Start broad, then get specific: "Tell me about Igor" → "What are his skills?"
+- Use technical terms: "programming languages", "networking equipment", "certifications"
+- Try multiple angles: "What technologies...", "What experience with...", "List Igor's..."
+- If results are poor, try /stats to check your database content
