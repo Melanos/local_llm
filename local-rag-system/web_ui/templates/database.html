@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database - Local RAG System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-robot"></i> Local RAG System
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{{ url_for('index') }}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a class="nav-link" href="{{ url_for('chat') }}">
+                    <i class="fas fa-comments"></i> Chat
+                </a>
+                <a class="nav-link" href="{{ url_for('train') }}">
+                    <i class="fas fa-graduation-cap"></i> Train
+                </a>
+                <a class="nav-link active" href="{{ url_for('database') }}">
+                    <i class="fas fa-database"></i> Database
+                </a>
+                <a class="nav-link" href="{{ url_for('settings') }}">
+                    <i class="fas fa-cogs"></i> Settings
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2><i class="fas fa-database text-primary"></i> Database Management</h2>
+        
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-bar"></i> Statistics</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr>
+                                <td><strong>Total Documents:</strong></td>
+                                <td>{{ stats.get('total_documents', 0) }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Unique Sources:</strong></td>
+                                <td>{{ stats.get('unique_sources', 0) }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Images:</strong></td>
+                                <td>{{ stats.get('content_types', {}).get('image', 0) }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Documents:</strong></td>
+                                <td>{{ stats.get('content_types', {}).get('document', 0) }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-search"></i> Search Database</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <input type="text" id="searchInput" class="form-control" placeholder="Search for content...">
+                            <button id="searchButton" class="btn btn-primary" type="button">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                        <div id="searchResults"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-file-alt"></i> Trained Documents</h5>
+                        <button id="refreshDocuments" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="documentsLoading" class="text-center">
+                            <i class="fas fa-spinner fa-spin"></i> Loading documents...
+                        </div>
+                        <div id="documentsContainer" style="display: none;">
+                            <div id="documentsSummary" class="alert alert-info"></div>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Source File</th>
+                                            <th>Type</th>
+                                            <th>Chunks</th>
+                                            <th>Preview</th>
+                                            <th>Date Added</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="documentsTable">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="documentsError" style="display: none;" class="alert alert-danger"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-folder"></i> Sources in Database</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if sources %}
+                        <div class="row">
+                            {% for source in sources %}
+                            <div class="col-md-4 mb-2">
+                                <span class="badge bg-light text-dark">{{ source }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p class="text-muted">No sources found in database.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Danger Zone</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Clear all data from the database. This action cannot be undone!</p>
+                        <button id="clearDatabase" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Clear Entire Database
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Search functionality
+        document.getElementById('searchButton').addEventListener('click', async () => {
+            const keyword = document.getElementById('searchInput').value.trim();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (!keyword) {
+                resultsDiv.innerHTML = '<div class="alert alert-warning">Please enter a search term.</div>';
+                return;
+            }
+            
+            resultsDiv.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+            
+            try {
+                const response = await fetch('/api/database/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ keyword: keyword })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (data.found > 0) {
+                        let html = `<h6>Found ${data.found} results:</h6>`;
+                        data.results.forEach((result, index) => {
+                            html += `
+                                <div class="card mb-2">
+                                    <div class="card-body">
+                                        <h6 class="card-title">${result.source} (${result.relevance}%)</h6>
+                                        <p class="card-text">${result.preview}</p>
+                                        <small class="text-muted">Type: ${result.source_type}</small>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        resultsDiv.innerHTML = html;
+                    } else {
+                        resultsDiv.innerHTML = '<div class="alert alert-info">No results found.</div>';
+                    }
+                } else {
+                    resultsDiv.innerHTML = `<div class="alert alert-danger">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="alert alert-danger">Connection error: ${error.message}</div>`;
+            }
+        });
+        
+        // Clear database functionality
+        document.getElementById('clearDatabase').addEventListener('click', async () => {
+            if (confirm('Are you sure you want to clear the entire database? This cannot be undone!')) {
+                if (confirm('This will delete ALL your trained data. Are you absolutely sure?')) {
+                    try {
+                        const response = await fetch('/api/database/clear', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        
+                        if (response.ok) {
+                            alert('Database cleared successfully!');
+                            location.reload();
+                        } else {
+                            const data = await response.json();
+                            alert(`Error: ${data.error}`);
+                        }
+                    } catch (error) {
+                        alert(`Connection error: ${error.message}`);
+                    }
+                }
+            }
+        });
+        
+        // Load documents on page load
+        async function loadDocuments() {
+            const loadingDiv = document.getElementById('documentsLoading');
+            const containerDiv = document.getElementById('documentsContainer');
+            const errorDiv = document.getElementById('documentsError');
+            const summaryDiv = document.getElementById('documentsSummary');
+            const tableBody = document.getElementById('documentsTable');
+            
+            try {
+                loadingDiv.style.display = 'block';
+                containerDiv.style.display = 'none';
+                errorDiv.style.display = 'none';
+                
+                const response = await fetch('/api/database/documents');
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Group documents by source
+                    const groupedDocs = {};
+                    data.documents.forEach(doc => {
+                        if (!groupedDocs[doc.source]) {
+                            groupedDocs[doc.source] = {
+                                source: doc.source,
+                                source_type: doc.source_type,
+                                chunks: [],
+                                total_length: 0,
+                                timestamp: doc.timestamp
+                            };
+                        }
+                        groupedDocs[doc.source].chunks.push(doc);
+                        groupedDocs[doc.source].total_length += doc.content_length;
+                    });
+                    
+                    // Update summary
+                    const uniqueFiles = Object.keys(groupedDocs).length;
+                    summaryDiv.innerHTML = `
+                        <strong>📊 Summary:</strong> ${uniqueFiles} unique document(s) with ${data.total_chunks} total chunks
+                    `;
+                    
+                    // Populate table
+                    tableBody.innerHTML = '';
+                    Object.values(groupedDocs).forEach(group => {
+                        const row = document.createElement('tr');
+                        
+                        // Get the first chunk preview
+                        const preview = group.chunks[0].content_preview;
+                        const shortPreview = preview.length > 100 ? preview.substring(0, 100) + '...' : preview;
+                        
+                        row.innerHTML = `
+                            <td>
+                                <strong>${group.source}</strong>
+                                <br><small class="text-muted">${group.total_length.toLocaleString()} characters</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">${group.source_type}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">${group.chunks.length}</span>
+                            </td>
+                            <td>
+                                <small>${shortPreview}</small>
+                            </td>
+                            <td>
+                                <small>${group.timestamp}</small>
+                            </td>
+                        `;
+                        
+                        tableBody.appendChild(row);
+                    });
+                    
+                    loadingDiv.style.display = 'none';
+                    containerDiv.style.display = 'block';
+                } else {
+                    throw new Error(data.error || 'Failed to load documents');
+                }
+            } catch (error) {
+                loadingDiv.style.display = 'none';
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = `<strong>Error loading documents:</strong> ${error.message}`;
+            }
+        }
+        
+        // Refresh documents button
+        document.getElementById('refreshDocuments').addEventListener('click', loadDocuments);
+        
+        // Load documents when page loads
+        document.addEventListener('DOMContentLoaded', loadDocuments);
+        
+        // Enter key for search
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('searchButton').click();
+            }
+        });
+    </script>
+</body>
+</html>
