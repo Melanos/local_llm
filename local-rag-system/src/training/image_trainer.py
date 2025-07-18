@@ -29,6 +29,7 @@ class ImageTrainer:
         self.processor = None
         self.model = None
         self.device = None
+        self.enhanced_analysis = self.config.get("features", {}).get("enhanced_image_analysis", False)
         
     def setup_vision_model(self) -> bool:
         """Initialize InstructBLIP model for image analysis"""
@@ -59,8 +60,16 @@ class ImageTrainer:
         """Detect image type to choose appropriate analysis prompt"""
         filename = image_path.name.lower()
         
+        # Network diagrams - specific detection
+        if any(keyword in filename for keyword in ['network', 'topology', 'router', 'switch', 'lan', 'wan']):
+            return 'network_diagram'
+        
+        # Flowcharts - specific detection  
+        if any(keyword in filename for keyword in ['flow', 'process', 'workflow', 'chart', 'diagram']):
+            return 'flowchart'
+        
         # Technical diagrams/documents
-        if any(keyword in filename for keyword in ['diagram', 'chart', 'network', 'topology', 'schema', 'flow', 'technical']):
+        if any(keyword in filename for keyword in ['technical', 'schema', 'blueprint', 'circuit', 'engineering']):
             return 'technical'
         
         # Screenshots or documents
@@ -77,13 +86,62 @@ class ImageTrainer:
     def get_analysis_prompt(self, image_type: str) -> str:
         """Get appropriate prompt based on image type"""
         prompts = {
-            'technical': "Analyze this technical diagram or document. Describe all technical details, components, connections, labels, and any text visible. Include technical specifications, measurements, or data shown.",
+            'technical': """Analyze this technical diagram or document step by step:
+1. Identify the type of diagram (network, flowchart, schematic, etc.)
+2. List all components, devices, or elements visible
+3. Describe connections, relationships, and data flow
+4. Extract all text, labels, and technical specifications
+5. Note any measurements, values, or configuration details
+6. Explain the overall purpose and functionality
+Provide a comprehensive technical analysis.""",
             
-            'document': "Analyze this document or screenshot. Extract and describe all text content, formatting, structure, and visual elements. Include any data, tables, charts, or technical information visible.",
+            'document': """Examine this document image thoroughly:
+1. Identify the document type (report, form, letter, etc.)
+2. Extract ALL text content, including headers and fine print
+3. Describe layout, formatting, and structure
+4. Note any tables, charts, or embedded graphics
+5. Identify key information like dates, names, numbers
+6. Summarize the document's purpose and main points
+Provide complete document analysis.""",
             
-            'general': "Describe this image in detail. Include what you see, the setting, people/animals/objects present, colors, lighting, composition, and any text or signs visible.",
+            'general': """Analyze this image in detail:
+1. Describe the main subject and setting
+2. List all objects, people, or animals present
+3. Note colors, lighting, and composition
+4. Read any visible text or signs
+5. Describe activities or actions taking place
+6. Provide context about the scene or situation
+Give a comprehensive visual description.""",
             
-            'comprehensive': "Provide a comprehensive analysis of this image. Describe everything visible including objects, people, text, technical details, setting, colors, and context. Be thorough and detailed."
+            'comprehensive': """Perform a thorough analysis of this image:
+1. Overall description and context
+2. Detailed inventory of all visible elements
+3. Text extraction and reading
+4. Spatial relationships and layout
+5. Technical details if applicable
+6. Colors, materials, and visual properties
+7. Any symbolic or contextual meaning
+Provide an exhaustive analysis covering all aspects.""",
+            
+            'network_diagram': """Analyze this network diagram with technical precision:
+1. Identify network topology type (star, mesh, ring, etc.)
+2. List all network devices (routers, switches, computers, servers)
+3. Describe connection types and protocols
+4. Extract IP addresses, subnets, and network ranges
+5. Note any security features or firewalls
+6. Identify redundancy or failover mechanisms
+7. Describe data flow patterns and network segments
+Provide detailed network architecture analysis.""",
+            
+            'flowchart': """Examine this flowchart systematically:
+1. Identify the process or workflow depicted
+2. List all process steps, decision points, and connectors
+3. Describe the logical flow and branching paths
+4. Extract all text from shapes and decision nodes
+5. Note start/end points and loop structures
+6. Identify any parallel processes or sub-workflows
+7. Explain the overall business process or algorithm
+Provide complete flowchart analysis."""
         }
         
         return prompts.get(image_type, prompts['comprehensive'])
@@ -122,6 +180,62 @@ class ImageTrainer:
             return analysis, image_type
             
         except Exception as e:
+            print(f"❌ Error analyzing image {image_path}: {e}")
+            return None, None
+    
+    def enhanced_multi_pass_analysis(self, image_path: Path) -> Tuple[str, str]:
+        """Perform enhanced multi-pass analysis for comprehensive understanding"""
+        if not self.setup_vision_model():
+            return None, None
+            
+        try:
+            image = Image.open(image_path).convert('RGB')
+            image_type = self.detect_image_type(image_path)
+            
+            analyses = []
+            
+            # Pass 1: Primary analysis with specialized prompt
+            primary_prompt = self.get_analysis_prompt(image_type)
+            inputs = self.processor(images=image, text=primary_prompt, return_tensors="pt")
+            if self.device == "cuda":
+                inputs = {k: v.to(self.device) for k, v in inputs.items()}
+            
+            with torch.no_grad():
+                outputs = self.model.generate(**inputs, max_length=512, num_beams=5, temperature=0.7)
+            primary_analysis = self.processor.decode(outputs[0], skip_special_tokens=True)
+            analyses.append(f"## Primary Analysis ({image_type.title()})\n{primary_analysis}")
+            
+            # Pass 2: Text extraction focus
+            text_prompt = "Extract and transcribe ALL text visible in this image, including labels, captions, numbers, and any written content. List each text element separately."
+            inputs = self.processor(images=image, text=text_prompt, return_tensors="pt")
+            if self.device == "cuda":
+                inputs = {k: v.to(self.device) for k, v in inputs.items()}
+            
+            with torch.no_grad():
+                outputs = self.model.generate(**inputs, max_length=256, num_beams=3, temperature=0.5)
+            text_analysis = self.processor.decode(outputs[0], skip_special_tokens=True)
+            analyses.append(f"## Text Content\n{text_analysis}")
+            
+            # Pass 3: Spatial relationships and layout
+            spatial_prompt = "Describe the spatial layout and positioning of elements in this image. How are components arranged and connected?"
+            inputs = self.processor(images=image, text=spatial_prompt, return_tensors="pt")
+            if self.device == "cuda":
+                inputs = {k: v.to(self.device) for k, v in inputs.items()}
+            
+            with torch.no_grad():
+                outputs = self.model.generate(**inputs, max_length=256, num_beams=3, temperature=0.6)
+            spatial_analysis = self.processor.decode(outputs[0], skip_special_tokens=True)
+            analyses.append(f"## Spatial Layout\n{spatial_analysis}")
+            
+            # Combine all analyses
+            combined_analysis = "\n\n".join(analyses)
+            
+            return combined_analysis, f"{image_type}_enhanced"
+            
+        except Exception as e:
+            print(f"❌ Error in enhanced analysis for {image_path}: {e}")
+            return None, None
+        except Exception as e:
             print(f"❌ Error analyzing {image_path.name}: {e}")
             return None, None
     
@@ -155,16 +269,30 @@ class ImageTrainer:
             return False
         
         # Check for existing analysis to avoid duplicates
-        existing_docs = self.rag_engine.search_documents(
-            f"source:{image_path.name}", n_results=1
-        )
+        try:
+            collection_name = self.rag_engine.config["database"]["collection_name"]
+            collection = self.rag_engine.chroma_client.get_collection(collection_name)
+            existing = collection.get(
+                where={"$and": [
+                    {"source_type": "image"},
+                    {"source": image_path.name}
+                ]}
+            )
+            
+            if existing['ids']:
+                print(f"⚠️  Image {image_path.name} already analyzed")
+                return False
+        except Exception as e:
+            print(f"⚠️  Error checking for existing analysis: {e}")
+            # Continue with analysis if check fails
         
-        if existing_docs['documents'][0]:
-            print(f"⚠️  Image {image_path.name} already analyzed")
-            return False
-        
-        # Analyze the image
-        analysis, image_type = self.analyze_image(image_path)
+        # Analyze the image with appropriate method
+        if self.enhanced_analysis:
+            print(f"🔍 Performing enhanced multi-pass analysis...")
+            analysis, image_type = self.enhanced_multi_pass_analysis(image_path)
+        else:
+            print(f"🔍 Analyzing as '{self.detect_image_type(image_path)}' image...")
+            analysis, image_type = self.analyze_image(image_path)
         
         if not analysis:
             print(f"❌ Failed to analyze {image_path.name}")
@@ -212,6 +340,15 @@ class ImageTrainer:
             image_files.extend(directory.glob(pattern))
             # Also check uppercase extensions
             image_files.extend(directory.glob(pattern.upper()))
+        
+        # Remove duplicates while preserving order
+        seen = set()
+        unique_files = []
+        for file in image_files:
+            if file not in seen:
+                seen.add(file)
+                unique_files.append(file)
+        image_files = unique_files
         
         if not image_files:
             print(f"📁 No supported image files found in {directory}")

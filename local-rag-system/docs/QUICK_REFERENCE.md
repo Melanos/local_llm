@@ -33,12 +33,19 @@ python train_documents.py
 
 # Train on images (place in ./data/images/)
 python train_images.py
+
+# Extract images from documents (NEW!)
+python extract_document_images.py
 ```
 
 #### 3. Chat with Your Data
 ```powershell
-# Start the AI chatbot
+# Start the AI chatbot (console)
 python chat.py
+
+# OR: Start the Web UI (browser interface)
+start_web_ui.bat
+# Then open: http://localhost:5000
 ```
 
 #### 4. Database Utilities
@@ -61,6 +68,7 @@ local-rag-system/
 ├── 🤖 chat.py                # Main chat application  
 ├── 📚 train_documents.py     # Document training
 ├── 🖼️ train_images.py        # Image training
+├── 📷 extract_document_images.py # Extract images from documents
 ├── 📋 requirements.txt       # Dependencies
 ├── 📖 README.md             # Full documentation
 ├── 🔧 src/                  # Source code
@@ -68,9 +76,9 @@ local-rag-system/
 │   ├── training/            # Training modules
 │   └── utils/               # Utilities
 ├── 📂 data/                 # Your data
-│   ├── documents/           # .docx files here
-│   ├── images/              # image files here
-│   └── analysis_results/    # generated analyses
+│   ├── documents/           # Documents (.docx, .pdf, .txt, .md, etc.)
+│   ├── images/              # Standalone image files (.jpg, .png, etc.)
+│   └── analysis_results/    # Generated image analyses
 ├── 💾 database/             # Vector database
 └── 📚 docs/                 # Documentation
 ```
@@ -91,6 +99,9 @@ local-rag-system/
 - **Follow-ups**: Ask specific follow-up questions in the same conversation
 - **Database Inspection**: Use `--stats` to check your database content
 - **Relevance Tuning**: Lower thresholds in config for broader search
+- **Images in Documents**: Use `python extract_document_images.py` to extract embedded images from DOCX, PDF, and PowerPoint files
+- **Auto-Extract**: Set `"auto_extract_images": true` in config.py to automatically extract images during document training
+- **Supported Formats**: Documents (.docx, .pdf, .txt, .md, .py, .js, .html, .css, .json, .xml, .csv, .pptx, .xlsx) | Images (.jpg, .jpeg, .png, .bmp, .tiff, .webp)
 
 ## 🔄 Migration Complete!
 
