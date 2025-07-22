@@ -40,8 +40,8 @@ DEFAULT_CONFIG = {
         "chat_threshold": 0.9
     },
     "features": {
-        "auto_extract_images": False,  # Set to True to automatically extract images from documents
-        "enhanced_image_analysis": False,  # Set to True for multi-pass detailed image analysis
+        "auto_extract_images": True,   # Set to True to automatically extract images from documents
+        "enhanced_image_analysis": True,  # Set to True for multi-pass detailed image analysis
         "vision_analysis_passes": 3  # Number of analysis passes for enhanced mode
     }
 }
