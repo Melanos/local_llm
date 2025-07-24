@@ -1,0 +1,36 @@
+# Local RAG System - Requirements
+# Core Dependencies for Network Diagram Analysis
+
+# Deep Learning and Vision Models
+torch>=2.5.1
+torchvision>=0.20.1
+torchaudio>=2.5.1
+transformers>=4.53.2
+accelerate>=0.30.0
+
+# Vector Database and Embeddings
+chromadb>=0.4.0
+sentence-transformers>=2.2.0
+
+# Web Interface
+flask>=2.3.0
+flask-cors>=4.0.0
+
+# Document Processing
+PyPDF2>=3.0.0
+python-docx>=0.8.11
+python-multipart>=0.0.6
+
+# Image Processing
+Pillow>=10.0.0
+
+# LLM Integration
+ollama>=0.1.0
+
+# Utilities
+requests>=2.31.0
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Development (Optional)
+jupyter>=1.0.0

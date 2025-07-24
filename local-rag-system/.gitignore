@@ -38,16 +38,20 @@ local-rag-env/
 *.swo
 *~
 
-# Database and Data (IMPORTANT: Keep your data private)
+# Database and Analysis Data (Keep private/sensitive data out of repo)
 database/
-data/documents/
-data/images/
 data/analysis_results/
+data/documents/*
+data/images/*
+!data/images/Network_diagram_*.png
+!data/images/Network_diagram_*.jpeg
+!data/images/Network_diagram_*.jpg
 
 # Model Cache
 .cache/
 huggingface_cache/
 transformers_cache/
+.huggingface/
 
 # Logs
 *.log
@@ -62,18 +66,16 @@ Thumbs.db
 *.temp
 temp/
 
-# Personal/Sensitive files (customize as needed)
-personal/
-private/
-*.docx
-*.pdf
-*.jpg
-*.jpeg
-*.png
-*.bmp
-*.tiff
-*.webp
+# Generated reports and outputs
+*_report.md
+*_analysis.txt
+network_knowledge_report.md
 
-# Config overrides (if you create local config files)
+# Config overrides
 config_local.py
 .env
+
+# Test files (keep the repo clean)
+test_*.py
+*_test.py
+debug_*.py
