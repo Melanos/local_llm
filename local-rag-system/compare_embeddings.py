@@ -32,8 +32,8 @@ def test_embedding_models():
     # Models to test
     models_to_test = [
         ("nomic", "Ollama Nomic-Embed-Text"),
-        ("jina_base", "Jina Embeddings v2 Base"),
-        ("jina_small", "Jina Embeddings v2 Small")
+        ("jina_v4", "Jina Embeddings v4 (v3 model)"),
+        ("jina_base", "Jina Embeddings v2 Base")
     ]
     
     results = {}

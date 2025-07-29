@@ -37,7 +37,15 @@ class EmbeddingEngine:
         
         if model_type == "huggingface" and SENTENCE_TRANSFORMERS_AVAILABLE:
             print(f"🔧 Loading Jina model: {model_name}")
-            self.model = SentenceTransformer(model_name)
+            # Handle models that require trust_remote_code
+            if "jina-embeddings-v4" in model_name:
+                self.model = SentenceTransformer(
+                    model_name, 
+                    model_kwargs={'default_task': 'retrieval'},
+                    trust_remote_code=True
+                )
+            else:
+                self.model = SentenceTransformer(model_name)
             print(f"✅ Jina model loaded successfully")
         elif model_type == "ollama":
             print(f"🔧 Using Ollama model: {model_name}")
@@ -135,6 +143,10 @@ class EnhancedRAGEngine:
             class CustomEmbeddingFunction:
                 def __init__(self, embedding_engine):
                     self.embedding_engine = embedding_engine
+                
+                def name(self):
+                    """Required by ChromaDB"""
+                    return f"custom_{self.embedding_engine.model_type}_{self.embedding_engine.model_name}"
                 
                 def __call__(self, input):
                     if isinstance(input, str):
@@ -258,8 +270,8 @@ if __name__ == "__main__":
     
     # Test with Jina model (if available)
     if SENTENCE_TRANSFORMERS_AVAILABLE:
-        print("\n2. Testing with Jina (jina-embeddings-v2-base-en)")
-        engine2 = EnhancedRAGEngine(embedding_model_key="jina_base")
+        print("\n2. Testing with Jina v2 Base (jina-embeddings-v2-base-en)")
+        engine2 = EnhancedRAGEngine(embedding_model_key="jina_v2_base")
         print(f"Collection info: {engine2.get_collection_info()}")
     else:
         print("\n2. Jina models not available (install sentence-transformers)")

@@ -24,8 +24,8 @@ def multi_embedding_chat():
     # Available models
     models = {
         "1": ("nomic", "Ollama Nomic-Embed-Text"),
-        "2": ("jina_base", "Jina Embeddings v2 Base"), 
-        "3": ("jina_small", "Jina Embeddings v2 Small"),
+        "2": ("jina_v4", "Jina Embeddings v4 (v3 model)"), 
+        "3": ("jina_base", "Jina Embeddings v2 Base"),
         "4": ("all", "Compare All Models")
     }
     
@@ -138,8 +138,8 @@ def compare_all_models(query):
     
     models_to_compare = [
         ("nomic", "Nomic"),
-        ("jina_base", "Jina Base"),
-        ("jina_small", "Jina Small")
+        ("jina_v4", "Jina v4"),
+        ("jina_base", "Jina v2 Base")
     ]
     
     print(f"\n🔍 Query: {query}")

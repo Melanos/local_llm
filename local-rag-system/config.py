@@ -21,13 +21,13 @@ ANALYSIS_RESULTS_DIR = DATA_DIR / "analysis_results"
 DEFAULT_CONFIG = {
     "models": {
         "chat_model": "llama3.2",
-        "embedding_model": "nomic-embed-text",
+        "embedding_model": "jinaai/jina-embeddings-v4",  # Default to best quality model
         "vision_model": "Salesforce/instructblip-vicuna-7b",
         # Embedding model options for comparison
         "embedding_options": {
-            "nomic": "nomic-embed-text",  # Via Ollama
-            "jina_base": "jinaai/jina-embeddings-v2-base-en",  # Via HuggingFace
-            "jina_small": "jinaai/jina-embeddings-v2-small-en"  # Via HuggingFace
+            "jina_v4": "jinaai/jina-embeddings-v4",        # 🥇 Best quality (2048-dim, production)
+            "nomic": "nomic-embed-text",                   # 🥈 Privacy/offline (768-dim, local)
+            # Removed jina_v2_base due to poor semantic understanding (-0.252 quality score)
         }
     },
     "ollama": {

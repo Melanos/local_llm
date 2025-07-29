@@ -38,8 +38,8 @@ def train_with_multiple_embeddings():
     # Models to train with
     embedding_models = [
         ("nomic", "Ollama Nomic-Embed-Text"),
-        ("jina_base", "Jina Embeddings v2 Base"),
-        ("jina_small", "Jina Embeddings v2 Small")
+        ("jina_v4", "Jina Embeddings v4 (v3 model)"),
+        ("jina_base", "Jina Embeddings v2 Base")
     ]
     
     # Get analysis results
