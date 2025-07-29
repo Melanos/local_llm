@@ -12,6 +12,9 @@ accelerate>=0.30.0
 chromadb>=0.4.0
 sentence-transformers>=2.2.0
 
+# Jina Embeddings for Comparison Testing
+jina>=3.20.0
+
 # Web Interface
 flask>=2.3.0
 flask-cors>=4.0.0

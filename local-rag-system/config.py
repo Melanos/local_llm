@@ -22,7 +22,13 @@ DEFAULT_CONFIG = {
     "models": {
         "chat_model": "llama3.2",
         "embedding_model": "nomic-embed-text",
-        "vision_model": "Salesforce/instructblip-vicuna-7b"
+        "vision_model": "Salesforce/instructblip-vicuna-7b",
+        # Embedding model options for comparison
+        "embedding_options": {
+            "nomic": "nomic-embed-text",  # Via Ollama
+            "jina_base": "jinaai/jina-embeddings-v2-base-en",  # Via HuggingFace
+            "jina_small": "jinaai/jina-embeddings-v2-small-en"  # Via HuggingFace
+        }
     },
     "ollama": {
         "url": "http://localhost:11434"
