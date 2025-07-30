@@ -172,7 +172,12 @@ class EnhancedRAGEngine:
             self.embedding_model_key = "default"
         
         # Determine model type and initialize embedding engine
-        if self.embedding_model_name.startswith("jinaai/") or self.embedding_model_name == "sentence-transformers/all-MiniLM-L6-v2":
+        if (self.embedding_model_name.startswith("jinaai/") or 
+            self.embedding_model_name.startswith("sentence-transformers/") or
+            self.embedding_model_name.startswith("BAAI/") or
+            self.embedding_model_name.startswith("intfloat/") or
+            self.embedding_model_name.startswith("hkunlp/") or
+            self.embedding_model_name.startswith("thenlper/")):
             self.embedding_engine = EmbeddingEngine(self.embedding_model_name, "huggingface")
         elif self.embedding_model_name.startswith("openai/clip-"):
             self.embedding_engine = EmbeddingEngine(self.embedding_model_name, "clip")

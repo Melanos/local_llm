@@ -21,10 +21,24 @@ wheels/
 *.egg
 
 # Virtual Environment
+local-rag-env/
 venv/
 env/
-ENV/
-local-rag-env/
+
+# Database
+database/rag_database/
+*.sqlite3
+
+# Test files
+test_*.py
+*_test.py
+*_test_*.json
+precision_*.json
+comparison_*.json
+
+# Logs
+*.log
+logs/
 
 # IDE
 .vscode/
@@ -37,20 +51,12 @@ local-rag-env/
 .DS_Store
 Thumbs.db
 
-# Project Specific
-database/
-*.json
-*.log
-backup_removed_files/
-archive/
-
 # Temporary files
-temp/
-tmp/
 *.tmp
 *.temp
+temp/
+tmp/
 
-# Model files (too large for git)
+# Model downloads cache
+.cache/
 models/
-*.bin
-*.safetensors

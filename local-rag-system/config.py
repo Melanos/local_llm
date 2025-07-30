@@ -21,14 +21,23 @@ ANALYSIS_RESULTS_DIR = DATA_DIR / "analysis_results"
 DEFAULT_CONFIG = {
     "models": {
         "chat_model": "llama3.2",
-        "embedding_model": "jinaai/jina-embeddings-v4",  # Default to best quality model
-        "vision_model": "Salesforce/instructblip-vicuna-7b",
+        "embedding_model": "openai/clip-vit-base-patch32",  # CLIP - Best performance and multimodal
+        "vision_model": "Salesforce/instructblip-vicuna-7b",  # Vicuna for image-to-text conversion
         # Embedding model options for comparison
         "embedding_options": {
+            # Current models
             "jina_v4": "jinaai/jina-embeddings-v4",        # 🥇 Best quality (2048-dim, production)
             "nomic": "nomic-embed-text",                   # 🥈 Privacy/offline (768-dim, local)
             "all_minilm": "sentence-transformers/all-MiniLM-L6-v2",  # 🔧 Baseline (384-dim, fast)
             "clip": "openai/clip-vit-base-patch32",        # 🖼️ Multimodal (512-dim, text+images)
+            
+            # Additional competitive models for large-scale testing
+            "all_mpnet": "sentence-transformers/all-mpnet-base-v2",     # 🏆 SBERT's best (768-dim)
+            "bge_large": "BAAI/bge-large-en-v1.5",                     # 🚀 BAAI large (1024-dim)
+            "e5_large": "intfloat/e5-large-v2",                        # 🔬 Microsoft E5 (1024-dim)
+            "instructor_xl": "hkunlp/instructor-xl",                   # 📚 Instruction-tuned (768-dim)
+            "gte_large": "thenlper/gte-large",                         # 🎯 GTE large (1024-dim)
+            "bge_m3": "BAAI/bge-m3",                                   # 🌐 Multilingual (1024-dim)
         }
     },
     "ollama": {
