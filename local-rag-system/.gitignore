@@ -20,21 +20,20 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual Environment
-local-rag-env/
-venv/
+# Environment
+.env
+.venv
 env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+local-rag-env/
 
 # Database
-database/rag_database/
+*.db
 *.sqlite3
-
-# Test files
-test_*.py
-*_test.py
-*_test_*.json
-precision_*.json
-comparison_*.json
+database/test_*
 
 # Logs
 *.log
@@ -45,18 +44,31 @@ logs/
 .idea/
 *.swp
 *.swo
-*~
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Temporary files
-*.tmp
-*.temp
-temp/
-tmp/
-
-# Model downloads cache
+# Model cache
 .cache/
 models/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+test_*.py
+*_test.py
+analysis_*.json
+benchmark_*.json
+
+# Production ready - keep these files:
+# *.py (core scripts)
+# *.md (documentation) 
+# *.json (configs)
+# *.bat (setup scripts)
+# src/ (core modules)
+# docs/ (documentation)
+# data/ (training data)
+# database/ (production DB)
+# web_ui/ (web interface)
