@@ -3,6 +3,7 @@ Enhanced RAG Engine with Multiple Embedding Model Support
 """
 
 import sys
+import os
 from pathlib import Path
 import chromadb
 from chromadb.utils import embedding_functions
@@ -26,17 +27,33 @@ except ImportError:
     SENTENCE_TRANSFORMERS_AVAILABLE = False
     print("⚠️  SentenceTransformers not available. Jina models will be unavailable.")
 
+try:
+    from transformers import CLIPProcessor, CLIPModel
+    import torch
+    CLIP_AVAILABLE = True
+except ImportError:
+    CLIP_AVAILABLE = False
+    print("⚠️  CLIP not available. Multimodal features will be unavailable.")
+
+try:
+    from PIL import Image
+    PIL_AVAILABLE = True
+except ImportError:
+    PIL_AVAILABLE = False
+    print("⚠️  PIL not available. Image processing will be unavailable.")
+
 
 class EmbeddingEngine:
-    """Handles multiple embedding model backends"""
+    """Handles multiple embedding model backends including multimodal CLIP"""
     
     def __init__(self, model_name: str, model_type: str = "ollama"):
         self.model_name = model_name
         self.model_type = model_type
         self.model = None
+        self.processor = None
         
         if model_type == "huggingface" and SENTENCE_TRANSFORMERS_AVAILABLE:
-            print(f"🔧 Loading Jina model: {model_name}")
+            print(f"🔧 Loading HuggingFace model: {model_name}")
             # Handle models that require trust_remote_code
             if "jina-embeddings-v4" in model_name:
                 self.model = SentenceTransformer(
@@ -46,7 +63,12 @@ class EmbeddingEngine:
                 )
             else:
                 self.model = SentenceTransformer(model_name)
-            print(f"✅ Jina model loaded successfully")
+            print(f"✅ HuggingFace model loaded successfully")
+        elif model_type == "clip" and CLIP_AVAILABLE:
+            print(f"🔧 Loading CLIP model: {model_name}")
+            self.model = CLIPModel.from_pretrained(model_name)
+            self.processor = CLIPProcessor.from_pretrained(model_name)
+            print(f"✅ CLIP model loaded successfully")
         elif model_type == "ollama":
             print(f"🔧 Using Ollama model: {model_name}")
     
@@ -56,6 +78,13 @@ class EmbeddingEngine:
             # Use Jina/HuggingFace model
             embeddings = self.model.encode(texts, convert_to_tensor=False)
             return embeddings.tolist()
+        elif self.model_type == "clip" and self.model:
+            # Use CLIP model for text
+            inputs = self.processor(text=texts, return_tensors="pt", padding=True)
+            with torch.no_grad():
+                text_features = self.model.get_text_features(**inputs)
+                text_features = text_features / text_features.norm(dim=-1, keepdim=True)  # Normalize
+            return text_features.cpu().numpy().tolist()
         elif self.model_type == "ollama":
             # Use Ollama model
             embeddings = []
@@ -84,6 +113,12 @@ class EmbeddingEngine:
         if self.model_type == "huggingface" and self.model:
             embedding = self.model.encode([text], convert_to_tensor=False)
             return embedding[0].tolist()
+        elif self.model_type == "clip" and self.model:
+            inputs = self.processor(text=[text], return_tensors="pt", padding=True)
+            with torch.no_grad():
+                text_features = self.model.get_text_features(**inputs)
+                text_features = text_features / text_features.norm(dim=-1, keepdim=True)  # Normalize
+            return text_features.cpu().numpy()[0].tolist()
         elif self.model_type == "ollama":
             try:
                 response = requests.post(
@@ -101,6 +136,22 @@ class EmbeddingEngine:
                 return []
         else:
             raise ValueError(f"Unsupported model type: {self.model_type}")
+    
+    def embed_image(self, image_path: str) -> List[float]:
+        """Generate embedding for an image (CLIP only)"""
+        if self.model_type == "clip" and self.model and PIL_AVAILABLE:
+            try:
+                image = Image.open(image_path).convert("RGB")
+                inputs = self.processor(images=image, return_tensors="pt")
+                with torch.no_grad():
+                    image_features = self.model.get_image_features(**inputs)
+                    image_features = image_features / image_features.norm(dim=-1, keepdim=True)  # Normalize
+                return image_features.cpu().numpy()[0].tolist()
+            except Exception as e:
+                print(f"❌ CLIP image embedding error: {e}")
+                return []
+        else:
+            raise ValueError(f"Image embedding only supported for CLIP models")
 
 
 class EnhancedRAGEngine:
@@ -121,10 +172,15 @@ class EnhancedRAGEngine:
             self.embedding_model_key = "default"
         
         # Determine model type and initialize embedding engine
-        if self.embedding_model_name.startswith("jinaai/"):
+        if self.embedding_model_name.startswith("jinaai/") or self.embedding_model_name == "sentence-transformers/all-MiniLM-L6-v2":
             self.embedding_engine = EmbeddingEngine(self.embedding_model_name, "huggingface")
+        elif self.embedding_model_name.startswith("openai/clip-"):
+            self.embedding_engine = EmbeddingEngine(self.embedding_model_name, "clip")
         else:
             self.embedding_engine = EmbeddingEngine(self.embedding_model_name, "ollama")
+        
+        # Multimodal capabilities for CLIP
+        self.supports_images = (self.embedding_model_name.startswith("openai/clip-"))
         
         # Initialize database
         self._init_database()
@@ -249,6 +305,77 @@ class EnhancedRAGEngine:
                 
         except Exception as e:
             return f"Error calling Ollama: {str(e)}"
+    
+    def add_image(self, image_path: str, metadata: Dict = None, image_id: str = None):
+        """Add an image to the vector database (CLIP models only)"""
+        if not self.supports_images:
+            raise ValueError("Image embedding only supported for CLIP models")
+        
+        if not image_id:
+            image_id = str(uuid.uuid4())
+        
+        if not metadata:
+            metadata = {
+                "type": "image",
+                "path": image_path,
+                "timestamp": datetime.now().isoformat()
+            }
+        
+        try:
+            # Generate image embedding using CLIP
+            image_embedding = self.embedding_engine.embed_image(image_path)
+            if not image_embedding:
+                return False
+            
+            # Store image representation in collection
+            self.collection.add(
+                documents=[f"Image: {os.path.basename(image_path)}"],  # Text description
+                metadatas=[metadata],
+                ids=[image_id]
+            )
+            
+            print(f"✅ Added image: {os.path.basename(image_path)}")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Failed to add image {image_path}: {e}")
+            return False
+    
+    def search_multimodal(self, query: str, include_images: bool = True, n_results: int = 5):
+        """Search both text and images using CLIP embeddings"""
+        if not self.supports_images:
+            return self.search(query, n_results)
+        
+        try:
+            # Generate text embedding for the query
+            query_embedding = self.embedding_engine.embed_query(query)
+            
+            # Search in the vector database
+            results = self.collection.query(
+                query_embeddings=[query_embedding],
+                n_results=n_results,
+                include=["documents", "metadatas", "distances"]
+            )
+            
+            formatted_results = []
+            for doc, metadata, distance in zip(
+                results["documents"][0], 
+                results["metadatas"][0], 
+                results["distances"][0]
+            ):
+                result_type = metadata.get("type", "text")
+                formatted_results.append({
+                    "content": doc,
+                    "metadata": metadata,
+                    "similarity": 1 - distance,  # Convert distance to similarity
+                    "type": result_type
+                })
+            
+            return formatted_results
+            
+        except Exception as e:
+            print(f"❌ Multimodal search failed: {e}")
+            return []
 
 
 # Backwards compatibility - keep original RAGEngine class

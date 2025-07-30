@@ -27,7 +27,8 @@ DEFAULT_CONFIG = {
         "embedding_options": {
             "jina_v4": "jinaai/jina-embeddings-v4",        # 🥇 Best quality (2048-dim, production)
             "nomic": "nomic-embed-text",                   # 🥈 Privacy/offline (768-dim, local)
-            # Removed jina_v2_base due to poor semantic understanding (-0.252 quality score)
+            "all_minilm": "sentence-transformers/all-MiniLM-L6-v2",  # 🔧 Baseline (384-dim, fast)
+            "clip": "openai/clip-vit-base-patch32",        # 🖼️ Multimodal (512-dim, text+images)
         }
     },
     "ollama": {
