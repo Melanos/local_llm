@@ -22,7 +22,7 @@ DEFAULT_CONFIG = {
     "models": {
         "chat_model": "llama3.2",
         "embedding_model": "openai/clip-vit-base-patch32",  # CLIP - Best performance and multimodal
-        "vision_model": "Salesforce/instructblip-vicuna-7b",  # Vicuna for image-to-text conversion
+        "vision_model": "Salesforce/instructblip-vicuna-7b",  # InstructBLIP with Vicuna-7B backbone for image-to-text conversion
         # Embedding model options for comparison
         "embedding_options": {
             # Current models

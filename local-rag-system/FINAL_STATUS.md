@@ -13,7 +13,30 @@ Your RAG system has been successfully optimized, tested, and prepared for produc
 - **Quality scoring explained**: Cosine similarity = semantic accuracy percentage
 - **Performance analysis** completed for production deployment scenarios
 
-### 🏆 Optimal Configuration Established
+### 🔬 Technical Model Architecture Clarification
+
+### CLIP vs InstructBLIP - Different Roles
+- **CLIP (ViT-B/32)**: Creates **multimodal embeddings** - maps text and images to the same vector space for similarity search, but does NOT generate text descriptions from images
+- **InstructBLIP**: A **vision-language model** that actually converts images to text descriptions using instruction-following capabilities
+
+### The "instructblip-vicuna-7b" Model
+- **Full name**: `Salesforce/instructblip-vicuna-7b`
+- **Architecture**: InstructBLIP vision model + Vicuna-7B language model
+- **Role**: Image-to-text conversion (image captioning and analysis)
+- **Components**:
+  - Vision encoder (processes images)
+  - Q-Former (bridges vision and language)
+  - **Vicuna-7B** (generates the actual text descriptions)
+
+### Why Both Models?
+1. **CLIP**: For finding relevant images when you search with text queries (embedding similarity)
+2. **InstructBLIP**: For understanding what's actually IN those images (text generation)
+
+This is why we use InstructBLIP **with Vicuna as its language backbone** - Vicuna-7B is the component that generates the descriptive text, while InstructBLIP provides the vision understanding and instruction-following capabilities.
+
+---
+
+## 🏆 Performance Summary
 - **Primary Model**: CLIP ViT-B/32 (shared embedding space for text & images, 91.8% accuracy, 36.2 chunks/s)
 - **Quality Leader**: E5-large (99.6% accuracy, enterprise-grade)
 - **Speed Champion**: all-MiniLM-L6-v2 (43.4 chunks/s, high-throughput)
@@ -41,7 +64,7 @@ Your RAG system has been successfully optimized, tested, and prepared for produc
    - **Note**: Does NOT convert images to text, only creates comparable embeddings
 
 #### Image-to-Text Conversion Models (Images → Text):
-✅ **InstructBLIP/Vicuna**: Actually converts images to descriptive text for processing  
+✅ **InstructBLIP**: Vision-language model that converts images to descriptive text (uses Vicuna-7B as language backbone)  
 
 ### 🔍 Quality Score Explanation
 - **Quality Range**: 0.0-1.0 (cosine similarity between document chunks)
@@ -167,7 +190,7 @@ local-rag-system/
 ```python
 # Current production settings
 EMBEDDING_MODEL = "openai/clip-vit-base-patch32"  # CLIP (shared embedding space for text & images)
-VISION_MODEL = "Salesforce/instructblip-vicuna-7b"  # InstructBLIP (image-to-text conversion)
+VISION_MODEL = "Salesforce/instructblip-vicuna-7b"  # InstructBLIP with Vicuna-7B (image-to-text conversion)
 ```
 
 ## Thank You! 
@@ -179,7 +202,7 @@ Your RAG system is now:
 - 📚 **Well documented** for future development
 - 🚀 **Ready to deploy** with confidence
 
-The combination of CLIP for shared text/image embeddings and InstructBLIP for image-to-text conversion gives you a powerful, production-ready RAG system capable of handling both text and visual content with exceptional quality. CLIP creates comparable embeddings for text and images, while InstructBLIP handles the actual image understanding and description.
+The combination of CLIP for shared text/image embeddings and InstructBLIP (with Vicuna-7B backbone) for image-to-text conversion gives you a powerful, production-ready RAG system capable of handling both text and visual content with exceptional quality. CLIP creates comparable embeddings for text and images, while InstructBLIP handles the actual image understanding and description generation.
 
 ---
 **Status**: Production Ready ✅  
