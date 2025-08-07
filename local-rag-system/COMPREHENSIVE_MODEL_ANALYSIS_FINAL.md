@@ -16,15 +16,17 @@
 | **Jina-v4** | Text Embedding | 8192 | 1024 | Unknown | Unknown | ❌ Failed |
 | **Nomic-Embed** | Text Embedding | 2048 | 768 | Unknown | Unknown | ❌ Failed |
 
-### 🖼️ Multimodal Embedding Models (Text + Images → Vector)
+### 🖼️ Multimodal Embedding Models (Text & Images → Same Vector Space)
 | Model | Type | Max Tokens | Dimensions | Quality Range | Speed Range | Status |
 |-------|------|------------|------------|---------------|-------------|---------|
-| **CLIP ViT-B/32** | Multimodal | 77 | 512 | 0.908-0.929 | 31.7-37.5 chunks/s | ✅ Working |
+| **CLIP ViT-B/32** | Multimodal Embedding | 77 | 512 | 0.908-0.929 | 31.7-37.5 chunks/s | ✅ Working |
 
-### 🖼️➡️📝 Image-to-Text Models (Images → Text)
+**Note**: CLIP creates comparable embeddings for both text and images in the same vector space, enabling similarity search across modalities. It does NOT convert images to text.
+
+### 🖼️➡️📝 Image-to-Text Conversion Models (Images → Text)
 | Model | Type | Use Case | Status | Notes |
 |-------|------|----------|--------|-------|
-| **InstructBLIP/Vicuna** | Image→Text | Vision analysis | ✅ Available | Used for image description |
+| **InstructBLIP/Vicuna** | Image→Text | Image understanding | ✅ Available | Actually converts images to descriptive text |
 
 ## 📊 Quality Score Interpretation
 
@@ -87,9 +89,10 @@
 - **Use case**: Most business documents, balanced performance
 
 #### 4. **Multimodal Strategy** (Text + Images)
-- **Primary**: CLIP ViT-B/32 (91.8% accuracy, 36.2 chunks/s)
-- **Unique**: Only model supporting both text and images
-- **Pair with**: InstructBLIP for image-to-text conversion
+- **Primary**: CLIP ViT-B/32 (shared embedding space for text & images)
+- **Image-to-Text**: InstructBLIP for converting images to text when needed
+- **Unique**: Cross-modal similarity search (find images similar to text, or vice versa)
+- **Use case**: Document analysis with embedded images, visual content search
 
 ### 📈 File Size Optimization:
 
