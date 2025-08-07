@@ -1,0 +1,232 @@
+{
+  "report_updated": "2025-08-06 17:41:03",
+  "large_file_testing": "completed",
+  "clip_status": "resolved",
+  "models_tested": 5,
+  "working_models": 5,
+  "large_file_support": 5,
+  "test_documents": 12,
+  "model_results": {
+    "all-MiniLM-L6-v2": {
+      "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+      "size_results": {
+        "small": {
+          "docs_processed": 3,
+          "embedding_time": 0.030925750732421875,
+          "embedding_speed": 97.00653756013322,
+          "avg_similarity": 0.3463938534259796,
+          "max_similarity": 0.5826228260993958,
+          "avg_doc_words": 42,
+          "success": true
+        },
+        "medium": {
+          "docs_processed": 3,
+          "embedding_time": 0.11110353469848633,
+          "embedding_speed": 27.00184119381462,
+          "avg_similarity": 0.27683964371681213,
+          "max_similarity": 0.46458566188812256,
+          "avg_doc_words": 211,
+          "success": true
+        },
+        "large": {
+          "docs_processed": 3,
+          "embedding_time": 0.060512542724609375,
+          "embedding_speed": 49.57649877072433,
+          "avg_similarity": 0.27268972992897034,
+          "max_similarity": 0.46458566188812256,
+          "avg_doc_words": 846,
+          "success": true
+        },
+        "xlarge": {
+          "docs_processed": 3,
+          "embedding_time": 0.06596827507019043,
+          "embedding_speed": 45.47640508726341,
+          "avg_similarity": 0.27268972992897034,
+          "max_similarity": 0.46458566188812256,
+          "avg_doc_words": 2116,
+          "success": true
+        }
+      },
+      "overall_success": true,
+      "overall_speed": 54.765320652983895,
+      "overall_quality": 0.2921532392501831
+    },
+    "all-mpnet-base-v2": {
+      "model_id": "sentence-transformers/all-mpnet-base-v2",
+      "size_results": {
+        "small": {
+          "docs_processed": 3,
+          "embedding_time": 0.14631891250610352,
+          "embedding_speed": 20.50315949330787,
+          "avg_similarity": 0.32801303267478943,
+          "max_similarity": 0.5278441309928894,
+          "avg_doc_words": 42,
+          "success": true
+        },
+        "medium": {
+          "docs_processed": 3,
+          "embedding_time": 0.5803468227386475,
+          "embedding_speed": 5.169322691977613,
+          "avg_similarity": 0.32305315136909485,
+          "max_similarity": 0.5023632049560547,
+          "avg_doc_words": 211,
+          "success": true
+        },
+        "large": {
+          "docs_processed": 3,
+          "embedding_time": 0.978111743927002,
+          "embedding_speed": 3.0671342192001068,
+          "avg_similarity": 0.3160616159439087,
+          "max_similarity": 0.4871533215045929,
+          "avg_doc_words": 846,
+          "success": true
+        },
+        "xlarge": {
+          "docs_processed": 3,
+          "embedding_time": 1.055983304977417,
+          "embedding_speed": 2.8409540054841655,
+          "avg_similarity": 0.3160616159439087,
+          "max_similarity": 0.4871533215045929,
+          "avg_doc_words": 2116,
+          "success": true
+        }
+      },
+      "overall_success": true,
+      "overall_speed": 7.895142602492438,
+      "overall_quality": 0.3207973539829254
+    },
+    "BGE-large-en": {
+      "model_id": "BAAI/bge-large-en-v1.5",
+      "size_results": {
+        "small": {
+          "docs_processed": 3,
+          "embedding_time": 0.7082881927490234,
+          "embedding_speed": 4.2355640411798126,
+          "avg_similarity": 0.6028769612312317,
+          "max_similarity": 0.7206642031669617,
+          "avg_doc_words": 42,
+          "success": true
+        },
+        "medium": {
+          "docs_processed": 3,
+          "embedding_time": 1.4066553115844727,
+          "embedding_speed": 2.1327186378166556,
+          "avg_similarity": 0.6016884446144104,
+          "max_similarity": 0.7309750318527222,
+          "avg_doc_words": 211,
+          "success": true
+        },
+        "large": {
+          "docs_processed": 3,
+          "embedding_time": 2.541006088256836,
+          "embedding_speed": 1.1806347154634487,
+          "avg_similarity": 0.598487913608551,
+          "max_similarity": 0.7189995050430298,
+          "avg_doc_words": 846,
+          "success": true
+        },
+        "xlarge": {
+          "docs_processed": 3,
+          "embedding_time": 2.565807580947876,
+          "embedding_speed": 1.1692225178053772,
+          "avg_similarity": 0.598487913608551,
+          "max_similarity": 0.7189995050430298,
+          "avg_doc_words": 2116,
+          "success": true
+        }
+      },
+      "overall_success": true,
+      "overall_speed": 2.179534978066324,
+      "overall_quality": 0.600385308265686
+    },
+    "E5-large": {
+      "model_id": "intfloat/e5-large-v2",
+      "size_results": {
+        "small": {
+          "docs_processed": 3,
+          "embedding_time": 0.494718074798584,
+          "embedding_speed": 6.0640598207805505,
+          "avg_similarity": 0.7903645634651184,
+          "max_similarity": 0.8208111524581909,
+          "avg_doc_words": 42,
+          "success": true
+        },
+        "medium": {
+          "docs_processed": 3,
+          "embedding_time": 1.3615198135375977,
+          "embedding_speed": 2.2034200091478557,
+          "avg_similarity": 0.8005887866020203,
+          "max_similarity": 0.8251982927322388,
+          "avg_doc_words": 211,
+          "success": true
+        },
+        "large": {
+          "docs_processed": 3,
+          "embedding_time": 2.5181915760040283,
+          "embedding_speed": 1.1913311237267046,
+          "avg_similarity": 0.8050068020820618,
+          "max_similarity": 0.8259875774383545,
+          "avg_doc_words": 846,
+          "success": true
+        },
+        "xlarge": {
+          "docs_processed": 3,
+          "embedding_time": 2.390718460083008,
+          "embedding_speed": 1.254852903045655,
+          "avg_similarity": 0.8050068020820618,
+          "max_similarity": 0.8259875774383545,
+          "avg_doc_words": 2116,
+          "success": true
+        }
+      },
+      "overall_success": true,
+      "overall_speed": 2.678415964175192,
+      "overall_quality": 0.8002417385578156
+    },
+    "CLIP (Fixed)": {
+      "model_id": "clip-ViT-B-32",
+      "size_results": {
+        "small": {
+          "docs_processed": 3,
+          "embedding_time": 0.08977603912353516,
+          "embedding_speed": 33.416488734503965,
+          "avg_similarity": 0.8328823447227478,
+          "max_similarity": 0.8928627967834473,
+          "avg_doc_words": 42,
+          "success": true
+        },
+        "medium": {
+          "docs_processed": 3,
+          "embedding_time": 0.07489633560180664,
+          "embedding_speed": 40.05536420299359,
+          "avg_similarity": 0.788201630115509,
+          "max_similarity": 0.8784199357032776,
+          "avg_doc_words": 211,
+          "success": true
+        },
+        "large": {
+          "docs_processed": 3,
+          "embedding_time": 0.06249594688415527,
+          "embedding_speed": 48.003112994846006,
+          "avg_similarity": 0.788201630115509,
+          "max_similarity": 0.8784199357032776,
+          "avg_doc_words": 846,
+          "success": true
+        },
+        "xlarge": {
+          "docs_processed": 3,
+          "embedding_time": 0.07043194770812988,
+          "embedding_speed": 42.594306953316206,
+          "avg_similarity": 0.788201630115509,
+          "max_similarity": 0.8784199357032776,
+          "avg_doc_words": 2116,
+          "success": true
+        }
+      },
+      "overall_success": true,
+      "overall_speed": 41.01731822141494,
+      "overall_quality": 0.7993718087673187
+    }
+  },
+  "recommended_model": "E5-large"
+}

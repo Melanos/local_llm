@@ -1,0 +1,133 @@
+{
+  "timestamp": "2025-08-06T18:40:04.530479",
+  "test_files": {
+    "test_large_10MB_business.txt": {
+      "path": "data\\test_docs\\test_large_10MB_business.txt",
+      "size_mb": 10.091354370117188,
+      "domain": "business",
+      "target_size": "10MB"
+    },
+    "test_large_25MB_business.txt": {
+      "path": "data\\test_docs\\test_large_25MB_business.txt",
+      "size_mb": 25.228388786315918,
+      "domain": "business",
+      "target_size": "25MB"
+    },
+    "test_large_50MB_business.txt": {
+      "path": "data\\test_docs\\test_large_50MB_business.txt",
+      "size_mb": 50.45677947998047,
+      "domain": "business",
+      "target_size": "50MB"
+    },
+    "test_large_10MB_technology.txt": {
+      "path": "data\\test_docs\\test_large_10MB_technology.txt",
+      "size_mb": 10.09781551361084,
+      "domain": "technology",
+      "target_size": "10MB"
+    },
+    "test_large_25MB_technology.txt": {
+      "path": "data\\test_docs\\test_large_25MB_technology.txt",
+      "size_mb": 25.244543075561523,
+      "domain": "technology",
+      "target_size": "25MB"
+    },
+    "test_large_50MB_technology.txt": {
+      "path": "data\\test_docs\\test_large_50MB_technology.txt",
+      "size_mb": 50.48908805847168,
+      "domain": "technology",
+      "target_size": "50MB"
+    },
+    "test_large_10MB_research.txt": {
+      "path": "data\\test_docs\\test_large_10MB_research.txt",
+      "size_mb": 10.098334312438965,
+      "domain": "research",
+      "target_size": "10MB"
+    },
+    "test_large_25MB_research.txt": {
+      "path": "data\\test_docs\\test_large_25MB_research.txt",
+      "size_mb": 25.24583911895752,
+      "domain": "research",
+      "target_size": "25MB"
+    },
+    "test_large_50MB_research.txt": {
+      "path": "data\\test_docs\\test_large_50MB_research.txt",
+      "size_mb": 50.49167823791504,
+      "domain": "research",
+      "target_size": "50MB"
+    }
+  },
+  "models_config": {
+    "all-MiniLM-L6-v2": {
+      "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+      "type": "Text Embedding",
+      "description": "Fast general-purpose text embeddings",
+      "max_tokens": 256,
+      "dimensions": 384
+    },
+    "all-mpnet-base-v2": {
+      "model_id": "sentence-transformers/all-mpnet-base-v2",
+      "type": "Text Embedding",
+      "description": "High-quality general text embeddings",
+      "max_tokens": 384,
+      "dimensions": 768
+    },
+    "BGE-large-en": {
+      "model_id": "BAAI/bge-large-en",
+      "type": "Text Embedding",
+      "description": "State-of-the-art English text embeddings",
+      "max_tokens": 512,
+      "dimensions": 1024
+    },
+    "E5-large": {
+      "model_id": "intfloat/e5-large",
+      "type": "Text Embedding",
+      "description": "Microsoft E5 high-quality embeddings",
+      "max_tokens": 512,
+      "dimensions": 1024
+    },
+    "CLIP-ViT-B32": {
+      "model_id": "clip-ViT-B-32",
+      "type": "Multimodal Embedding",
+      "description": "Text + Image embeddings (OpenAI CLIP)",
+      "max_tokens": 77,
+      "dimensions": 512
+    },
+    "Jina-v4": {
+      "model_id": "jinaai/jina-embeddings-v4",
+      "type": "Text Embedding",
+      "description": "Jina AI high-performance embeddings",
+      "max_tokens": 8192,
+      "dimensions": 1024
+    },
+    "Nomic-Embed": {
+      "model_id": "nomic-ai/nomic-embed-text-v1",
+      "type": "Text Embedding",
+      "description": "Privacy-focused embeddings",
+      "max_tokens": 2048,
+      "dimensions": 768
+    }
+  },
+  "results": {
+    "all-MiniLM-L6-v2": {
+      "model_info": {
+        "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+        "type": "Text Embedding",
+        "description": "Fast general-purpose text embeddings",
+        "max_tokens": 256,
+        "dimensions": 384
+      },
+      "loading": {
+        "time_seconds": 2.860712766647339,
+        "memory_mb": 41.8984375,
+        "status": "success"
+      },
+      "file_results": {
+        "test_large_10MB_business.txt": {
+          "file_size_mb": 10.091354370117188,
+          "total_chunks": 5473,
+          "processed_chunks": 100,
+          "processing_time_seconds": 2.37382435798645,
+          "memory_usage_mb": 55.27734375,
+          "chunks_per_second": 42.12611588703346,
+          "avg_chunk_time_seconds": 0.023738243579864503,
+          "avg_similarity_score": 

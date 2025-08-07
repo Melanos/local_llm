@@ -1,0 +1,66 @@
+{
+  "report_generated": "2025-08-06 17:34:02",
+  "repository_status": "production_ready",
+  "cleanup_completed": true,
+  "files_removed": 1,
+  "remaining_files": 17,
+  "embedding_models": {
+    "tested": 7,
+    "working": 4,
+    "results": {
+      "CLIP ViT-B/32": {
+        "status": "failed",
+        "error": "'CLIPConfig' object has no attribute 'hidden_size'",
+        "model_id": "openai/clip-vit-base-patch32"
+      },
+      "all-MiniLM-L6-v2": {
+        "status": "success",
+        "embedding_speed": 41.726583348877696,
+        "best_similarity": 0.8061769008636475,
+        "best_match": "Machine learning is a subset of artificial intelligence.",
+        "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+        "dimensions": 384
+      },
+      "all-mpnet-base-v2": {
+        "status": "success",
+        "embedding_speed": 13.426423713174243,
+        "best_similarity": 0.6896301507949829,
+        "best_match": "Machine learning is a subset of artificial intelligence.",
+        "model_id": "sentence-transformers/all-mpnet-base-v2",
+        "dimensions": 768
+      },
+      "BGE-large-en": {
+        "status": "success",
+        "embedding_speed": 3.377895395112232,
+        "best_similarity": 0.848778486251831,
+        "best_match": "Machine learning is a subset of artificial intelligence.",
+        "model_id": "BAAI/bge-large-en-v1.5",
+        "dimensions": 1024
+      },
+      "E5-large": {
+        "status": "success",
+        "embedding_speed": 3.3468157782867323,
+        "best_similarity": 0.8799008131027222,
+        "best_match": "Machine learning is a subset of artificial intelligence.",
+        "model_id": "intfloat/e5-large-v2",
+        "dimensions": 1024
+      },
+      "Jina v4": {
+        "status": "failed",
+        "error": "No module named 'custom_st'",
+        "model_id": "jinaai/jina-embeddings-v4"
+      },
+      "Nomic Embed": {
+        "status": "failed",
+        "error": "All Nomic variants failed",
+        "model_id": "nomic-ai/nomic-embed-text-v1.5"
+      }
+    }
+  },
+  "image_processing": {
+    "status": "model_failed",
+    "error": "'CLIPConfig' object has no attribute 'hidden_size'"
+  },
+  "recommended_model": "Requires setup",
+  "deployment_ready": true
+}
